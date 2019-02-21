@@ -19,11 +19,10 @@ version: 2
     - run:
         name: "Upload"
         command: |
-          FOLDER=$([ -z "$CIRCLE_TAG" ] && echo "$CIRCLE_BRANCH" || echo "$CIRCLE_TAG")
           mv pihole-FTL "${BIN_NAME}"
           sha1sum pihole-FTL-* > ${BIN_NAME}.sha1
           ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-          [[ "$CIRCLE_PR_NUMBER" == "" ]] && sftp $SSH_USER@$SSH_HOST <<<$'mkdir ${FOLDER}'
+          [[ "$CIRCLE_PR_NUMBER" == "" ]] && sftp $SSH_USER@$SSH_HOST <<<$'mkdir ${CIRCLE_TAG:CIRCLE_BRANCH}'
           [[ "$CIRCLE_PR_NUMBER" == "" ]] && sftp $SSH_USER@$SSH_HOST <<<$'put ${BIN_NAME}*'
           
 jobs:
